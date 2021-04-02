@@ -4,18 +4,19 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 )
 
-type cFRead struct {
+type cf1473aRead struct {
 	sc        *bufio.Reader
 	split     []string
 	index     int
 	separator string
 }
 
-func (read *cFRead) GetLine() string {
+func (read *cf1473aRead) GetLine() string {
 	line, err := read.sc.ReadString('\n')
 	if err != nil {
 		fmt.Println("error line:", line, " err: ", err)
@@ -24,36 +25,36 @@ func (read *cFRead) GetLine() string {
 	read.index = 0
 	return line
 }
-func (read *cFRead) load() {
+func (read *cf1473aRead) load() {
 	if len(read.split) <= read.index {
 		read.split = strings.Split(read.GetLine(), read.separator)
 		read.index = 0
 	}
 }
 
-func (read *cFRead) NextInt() int {
+func (read *cf1473aRead) NextInt() int {
 	read.load()
 	val, _ := strconv.Atoi(strings.TrimSpace(read.split[read.index]))
 	read.index++
 	return val
 }
 
-func (read *cFRead) NextInt64() int64 {
+func (read *cf1473aRead) NextInt64() int64 {
 	read.load()
 	val, _ := strconv.ParseInt(strings.TrimSpace(read.split[read.index]), 10, 64)
 	read.index++
 	return val
 }
 
-func (read *cFRead) NextString() string {
+func (read *cf1473aRead) NextString() string {
 	read.load()
 	val := strings.TrimSpace(read.split[read.index])
 	read.index++
 	return val
 }
 
-func newCFRead(r *bufio.Reader) *CFRead {
-	return &CFRead{
+func newcf1473aread(r *bufio.Reader) *cf1473aRead {
+	return &cf1473aRead{
 		sc:        r,
 		split:     []string{},
 		index:     0,
@@ -62,28 +63,34 @@ func newCFRead(r *bufio.Reader) *CFRead {
 }
 
 func main() {
-	in := newCFRead(bufio.NewReader(os.Stdin))
+	in := newcf1473aread(bufio.NewReader(os.Stdin))
 
-	in.NextInt()
-
-	reader := bufio.NewReader(os.Stdin)
-	text, _ := reader.ReadString('\n')
-	line := text[:len(text)-1]
-
-	fmt.Println("last ", line, " last ", line[len(line)-1:])
-	var t int = 0
-
-	fmt.Scan(&t)
-	fmt.Println("T ", t)
-	for ; t > 0; t-- {
-		var n int = 0
-		fmt.Scan(&n)
-		fmt.Println("N ", n)
-		for ; n > 0; n-- {
-			var x int = 0
-			fmt.Scan(&x)
-			fmt.Println("val ", x)
+	T := in.NextInt()
+	for ; T > 0; T-- {
+		N := in.NextInt()
+		D := in.NextInt()
+		var arr [100]int
+		var ws bool = false
+		i := 0
+		for ; N > 0; N-- {
+			value := in.NextInt()
+			if value > D {
+				ws = true
+			}
+			arr[i] = value
+			i++
 		}
-	}
 
+		if !ws {
+			fmt.Println("YES")
+		} else {
+			sort.Ints(arr[:i])
+			if arr[0]+arr[1] <= D {
+				fmt.Println("YES")
+			} else {
+				fmt.Println("NO")
+			}
+		}
+
+	}
 }
