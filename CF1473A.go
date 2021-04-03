@@ -9,62 +9,58 @@ import (
 	"strings"
 )
 
-type cf1473aRead struct {
+type CF1473A struct {
 	sc        *bufio.Reader
 	split     []string
 	index     int
 	separator string
 }
 
-func (read *cf1473aRead) GetLine() string {
-	line, err := read.sc.ReadString('\n')
+func (in *CF1473A) GetLine() string {
+	line, err := in.sc.ReadString('\n')
 	if err != nil {
 		fmt.Println("error line:", line, " err: ", err)
 	}
-	read.split = []string{}
-	read.index = 0
+	in.split = []string{}
+	in.index = 0
 	return line
 }
-func (read *cf1473aRead) load() {
-	if len(read.split) <= read.index {
-		read.split = strings.Split(read.GetLine(), read.separator)
-		read.index = 0
+func (in *CF1473A) load() {
+	if len(in.split) <= in.index {
+		in.split = strings.Split(in.GetLine(), in.separator)
+		in.index = 0
 	}
 }
 
-func (read *cf1473aRead) NextInt() int {
-	read.load()
-	val, _ := strconv.Atoi(strings.TrimSpace(read.split[read.index]))
-	read.index++
+func (in *CF1473A) NextInt() int {
+	in.load()
+	val, _ := strconv.Atoi(strings.TrimSpace(in.split[in.index]))
+	in.index++
 	return val
 }
 
-func (read *cf1473aRead) NextInt64() int64 {
-	read.load()
-	val, _ := strconv.ParseInt(strings.TrimSpace(read.split[read.index]), 10, 64)
-	read.index++
+func (in *CF1473A) NextInt64() int64 {
+	in.load()
+	val, _ := strconv.ParseInt(strings.TrimSpace(in.split[in.index]), 10, 64)
+	in.index++
 	return val
 }
 
-func (read *cf1473aRead) NextString() string {
-	read.load()
-	val := strings.TrimSpace(read.split[read.index])
-	read.index++
+func (in *CF1473A) NextString() string {
+	in.load()
+	val := strings.TrimSpace(in.split[in.index])
+	in.index++
 	return val
 }
 
-func newcf1473aread(r *bufio.Reader) *cf1473aRead {
-	return &cf1473aRead{
-		sc:        r,
-		split:     []string{},
-		index:     0,
-		separator: " ",
-	}
-}
-
-func main() {
-	in := newcf1473aread(bufio.NewReader(os.Stdin))
-
+/**
+ Run solve the problem CF1473A
+ Date: 2/04/21
+ User: pepradere
+ URL: https://codeforces.com/problemset/problem/1473/A
+ Problem: CF1473A
+**/
+func (in *CF1473A) Run() {
 	T := in.NextInt()
 	for ; T > 0; T-- {
 		N := in.NextInt()
@@ -91,6 +87,19 @@ func main() {
 				fmt.Println("NO")
 			}
 		}
-
 	}
+
+}
+
+func NewCF1473A(r *bufio.Reader) *CF1473A {
+	return &CF1473A{
+		sc:        r,
+		split:     []string{},
+		index:     0,
+		separator: " ",
+	}
+}
+
+func main() {
+	NewCF1473A(bufio.NewReader(os.Stdin)).Run()
 }
