@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"math"
 	"os"
 	"sort"
 	"strconv"
@@ -14,6 +15,8 @@ type CF1509C struct {
 	split     []string
 	index     int
 	separator string
+	arr       []int
+	memo      [][]int64
 }
 
 func (in *CF1509C) GetLine() string {
@@ -61,40 +64,33 @@ func (in *CF1509C) NextString() string {
  Problem: CF1509C
 **/
 func (in *CF1509C) Run() {
-	// TODO WA
 	N := in.NextInt()
-	var arr []int
-	for ; N > 0; N-- {
-		arr = append(arr, in.NextInt())
-	}
-	sort.Ints(arr)
 
-	mov := 0
-	for i := 0; i < len(arr); i++ {
-		if arr[0] == arr[i] {
-			arr = append(arr, arr[0])
-			mov++
-		} else {
-			break
+	for ; N > 0; N-- {
+		in.arr = append(in.arr, in.NextInt())
+	}
+	sort.Ints(in.arr)
+	in.memo = make([][]int64, len(in.arr))
+	for i := 0; i < len(in.arr); i++ {
+		in.memo[i] = make([]int64, len(in.arr))
+		for j := 0; j < len(in.arr); j++ {
+			in.memo[i][j] = -1
 		}
 	}
-	if mov > 0 {
-		arr = arr[mov:]
+	sol := in.dp(0, len(in.arr)-1)
+	fmt.Println(sol)
+
+}
+
+func (in *CF1509C) dp(f, t int) int64 {
+	if f == t {
+		return 0
 	}
-	//fmt.Println("---- " , arr)
-	max := 0
-	min := 2000000000
-	d := 0
-	for i := 0; i < len(arr); i++ {
-		if max < arr[i] {
-			max = arr[i]
-		}
-		if min > arr[i] {
-			min = arr[i]
-		}
-		d += max - min
+	value := int64(in.arr[t] - in.arr[f])
+	if in.memo[f][t] == -1 {
+		in.memo[f][t] = value + int64(math.Min(float64(in.dp(f+1, t)), float64(in.dp(f, t-1))))
 	}
-	fmt.Println(d)
+	return in.memo[f][t]
 }
 
 func NewCF1509C(r *bufio.Reader) *CF1509C {
