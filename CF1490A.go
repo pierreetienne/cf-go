@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"math"
 	"os"
 	"strconv"
 	"strings"
@@ -52,6 +53,20 @@ func (in *CF1490A) NextString() string {
 	return val
 }
 
+func (in *CF1490A) Min(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
+}
+
+func (in *CF1490A) Max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
+
 /**
  Run solve the problem CF1490A
  Date: 25/05/21
@@ -64,10 +79,28 @@ func (in *CF1490A) Run() {
 	t := in.NextInt()
 
 	for ; t > 0; t-- {
-		//n := in.NextInt()
+		n := in.NextInt()
+		var arr []int
+		for ; n > 0; n-- {
+			val := in.NextInt()
+			arr = append(arr, val)
+		}
 
+		var sol []int
+		for i := 0; i < len(arr); i++ {
+			if i > 0 {
+				for in.Min(sol[len(sol)-1], arr[i])*2 < in.Max(sol[len(sol)-1], arr[i]) {
+					if arr[i] == in.Min(sol[len(sol)-1], arr[i]) {
+						sol = append(sol, int(math.Ceil(float64(sol[len(sol)-1])/2.0)))
+					} else {
+						sol = append(sol, sol[len(sol)-1]*2)
+					}
+				}
+			}
+			sol = append(sol, arr[i])
+		}
+		fmt.Println(len(sol) - len(arr))
 	}
-
 }
 
 func NewCF1490A(r *bufio.Reader) *CF1490A {
